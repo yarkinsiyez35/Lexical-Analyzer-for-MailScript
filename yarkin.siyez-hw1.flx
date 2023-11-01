@@ -8,7 +8,7 @@ tENDMAIL "end"(" "|\t|\n)+"Mail"
 tSEND "send"
 tFROM "from"
 tSCHEDULE "schedule"
-tENDSCHEDULE "end"" "(" "|\t|\n)*"schedule"
+tENDSCHEDULE "end"(" "|\t|\n)+"Schedule" 
 
 SPACE " "
 
@@ -34,7 +34,7 @@ tIDENT [A-Za-z_][A-Za-z_0-9]*
 
 tSTRING \"([^\"\\]|\\.)*\" 
 
-LOCALPART [A-Za-z_0-9]+([\\.-]?[A-Za-z_0-9]+)*
+LOCALPART [A-Za-z_0-9-]+([\\.]?[A-Za-z_0-9]+)*
 
 LABEL ([a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])*)
 
@@ -81,7 +81,18 @@ COMMENT "//"(.)*
 
 {tMAIL}  {printf("%d_tMAIL\n", numberOfLines);}
 
-{tENDMAIL} {printf("%d_tENDMAIL\n", numberOfLines);}
+{tENDMAIL} {
+        printf("%d_tENDMAIL\n", numberOfLines);
+        int strLength = strlen(yytext-1);
+        int i;
+        for (i = 0; i< strLength ; i++)
+            {
+                if (yytext[i] == '\n')
+                {
+                    numberOfLines++;
+                }
+            }
+        }
 
 {tSEND} {printf("%d_tSEND\n", numberOfLines);}
 
@@ -89,7 +100,18 @@ COMMENT "//"(.)*
 
 {tSCHEDULE} {printf("%d_tSCHEDULE\n", numberOfLines);}
 
-{tENDSCHEDULE} {printf("%d_tENDSCHEDULE\n", numberOfLines);}
+{tENDSCHEDULE} {printf("%d_tENDSCHEDULE\n", numberOfLines);
+int strLength = strlen(yytext-1);
+        int i;
+        for (i = 0; i< strLength ; i++)
+            {
+                if (yytext[i] == '\n')
+                {
+                    numberOfLines++;
+                }
+            }
+        }
+ 
 
 {tTO} {printf("%d_tTO\n", numberOfLines);}
 
